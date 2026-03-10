@@ -1,34 +1,65 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertInquirySchema, type InsertInquiry } from "@shared/schema";
-import { useCreateInquiry } from "@/hooks/use-insurance";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useState } from "react";
+import { insuranceTypes } from "@/data/static-data";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Send, ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react";
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  type: string;
+  message: string;
+}
 
 export function QuoteForm() {
-  const mutation = useCreateInquiry();
-  
-  const form = useForm<InsertInquiry>({
-    resolver: zodResolver(insertInquirySchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      type: "auto",
-      message: "",
-    },
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    email: "",
+    phone: "",
+    type: "auto",
+    message: "",
   });
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  function onSubmit(data: InsertInquiry) {
-    mutation.mutate(data, {
-      onSuccess: () => {
-        form.reset();
-      },
-    });
+  const handleChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Static form - just show success message
+    setIsSubmitted(true);
+    // Reset after 5 seconds
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        type: "auto",
+        message: "",
+      });
+    }, 5000);
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="relative overflow-hidden bg-card rounded-3xl shadow-2xl border border-border p-8 md:p-10">
+        <div className="text-center py-12 space-y-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/10 mx-auto">
+            <CheckCircle2 className="w-10 h-10 text-accent" />
+          </div>
+          <h3 className="text-3xl font-bold font-arabic text-foreground">تم استلام طلبك بنجاح</h3>
+          <p className="text-muted-foreground font-arabic text-lg max-w-md mx-auto">
+            شكراً لتواصلك معنا! سيقوم أحد ممثلينا بالتواصل معك قريباً لتقديم العرض المناسب.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -49,134 +80,88 @@ export function QuoteForm() {
           </p>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 rtl">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="font-arabic text-right">
-                  <FormLabel className="text-foreground font-medium">الاسم الكامل</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="أدخل اسمك" 
-                      {...field} 
-                      className="text-right h-14 bg-muted/50 border-0 rounded-xl focus:ring-2 focus:ring-accent/20 text-base" 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <form onSubmit={handleSubmit} className="space-y-5 rtl">
+          <div className="font-arabic text-right space-y-2">
+            <Label className="text-foreground font-medium">الاسم الكامل</Label>
+            <Input 
+              placeholder="أدخل اسمك" 
+              value={formData.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              required
+              className="text-right h-14 bg-muted/50 border-0 rounded-xl focus:ring-2 focus:ring-accent/20 text-base" 
             />
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="font-arabic text-right">
-                    <FormLabel className="text-foreground font-medium">البريد الإلكتروني</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="name@example.com" 
-                        {...field} 
-                        className="text-right h-14 bg-muted/50 border-0 rounded-xl focus:ring-2 focus:ring-accent/20 text-base" 
-                        dir="ltr" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem className="font-arabic text-right">
-                    <FormLabel className="text-foreground font-medium">رقم الجوال</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="05xxxxxxxx" 
-                        {...field} 
-                        className="text-right h-14 bg-muted/50 border-0 rounded-xl focus:ring-2 focus:ring-accent/20 text-base" 
-                        dir="ltr" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="font-arabic text-right space-y-2">
+              <Label className="text-foreground font-medium">البريد الإلكتروني</Label>
+              <Input 
+                type="email"
+                placeholder="name@example.com" 
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                required
+                className="text-right h-14 bg-muted/50 border-0 rounded-xl focus:ring-2 focus:ring-accent/20 text-base" 
+                dir="ltr" 
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="font-arabic text-right">
-                  <FormLabel className="text-foreground font-medium">نوع التأمين</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="h-14 bg-muted/50 border-0 rounded-xl flex-row-reverse text-base">
-                        <SelectValue placeholder="اختر نوع التأمين" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="font-arabic rounded-xl" align="end">
-                      <SelectItem value="auto" className="py-3">تأمين السيارات</SelectItem>
-                      <SelectItem value="health" className="py-3">تأمين صحي</SelectItem>
-                      <SelectItem value="home" className="py-3">تأمين المنازل</SelectItem>
-                      <SelectItem value="travel" className="py-3">تأمين السفر</SelectItem>
-                      <SelectItem value="life" className="py-3">تأمين الحياة</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="font-arabic text-right space-y-2">
+              <Label className="text-foreground font-medium">رقم الجوال</Label>
+              <Input 
+                placeholder="05xxxxxxxx" 
+                value={formData.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                required
+                className="text-right h-14 bg-muted/50 border-0 rounded-xl focus:ring-2 focus:ring-accent/20 text-base" 
+                dir="ltr" 
+              />
+            </div>
+          </div>
 
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem className="font-arabic text-right">
-                  <FormLabel className="text-foreground font-medium">ملاحظات إضافية (اختياري)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="اكتب أي تفاصيل إضافية هنا..." 
-                      className="min-h-[120px] resize-none bg-muted/50 border-0 rounded-xl text-right focus:ring-2 focus:ring-accent/20 text-base" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button 
-              type="submit" 
-              className="w-full h-14 text-lg font-bold font-arabic rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all mt-6 gap-2"
-              disabled={mutation.isPending}
+          <div className="font-arabic text-right space-y-2">
+            <Label className="text-foreground font-medium">نوع التأمين</Label>
+            <Select 
+              value={formData.type} 
+              onValueChange={(value) => handleChange("type", value)}
             >
-              {mutation.isPending ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  جاري الإرسال...
-                </>
-              ) : (
-                <>
-                  <Send className="h-5 w-5" />
-                  إرسال الطلب
-                </>
-              )}
-            </Button>
+              <SelectTrigger className="h-14 bg-muted/50 border-0 rounded-xl flex-row-reverse text-base">
+                <SelectValue placeholder="اختر نوع التأمين" />
+              </SelectTrigger>
+              <SelectContent className="font-arabic rounded-xl" align="end">
+                {insuranceTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value} className="py-3">
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            {/* Trust indicator */}
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-arabic pt-4">
-              <ShieldCheck className="w-4 h-4 text-accent" />
-              <span>بياناتك محمية وآمنة معنا</span>
-            </div>
-          </form>
-        </Form>
+          <div className="font-arabic text-right space-y-2">
+            <Label className="text-foreground font-medium">ملاحظات إضافية (اختياري)</Label>
+            <Textarea 
+              placeholder="اكتب أي تفاصيل إضافية هنا..." 
+              value={formData.message}
+              onChange={(e) => handleChange("message", e.target.value)}
+              className="min-h-[120px] resize-none bg-muted/50 border-0 rounded-xl text-right focus:ring-2 focus:ring-accent/20 text-base" 
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full h-14 text-lg font-bold font-arabic rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all mt-6 gap-2"
+          >
+            <Send className="h-5 w-5" />
+            إرسال الطلب
+          </Button>
+
+          {/* Trust indicator */}
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-arabic pt-4">
+            <ShieldCheck className="w-4 h-4 text-accent" />
+            <span>بياناتك محمية وآمنة معنا</span>
+          </div>
+        </form>
       </div>
     </div>
   );

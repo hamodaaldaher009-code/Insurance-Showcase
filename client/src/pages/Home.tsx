@@ -2,7 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
 import { OfferCard } from "@/components/OfferCard";
 import { QuoteForm } from "@/components/QuoteForm";
-import { useProducts, useOffers } from "@/hooks/use-insurance";
+import { products, offers } from "@/data/static-data";
 import {
   ShieldCheck,
   Users,
@@ -20,9 +20,6 @@ import { Button } from "@/components/ui/button";
 import promoImage from "@assets/603914566_18418166449188673_8085109396950144801_n_1768301937802.jpg";
 
 export default function Home() {
-  const { data: products, isLoading: productsLoading } = useProducts();
-  const { data: offers, isLoading: offersLoading } = useOffers();
-
   const scrollToQuote = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -114,6 +111,7 @@ export default function Home() {
                     src="https://images.unsplash.com/photo-1591035897819-f4bdf739f446?w=800&q=80"
                     alt="عائلة سعيدة"
                     className="w-full h-[600px] object-cover"
+                    crossOrigin="anonymous"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
                 </div>
@@ -131,7 +129,7 @@ export default function Home() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground font-arabic">نسبة رضا العملاء</p>
-                      <p className="text-3xl font-bold text-foreground">٩٨٪</p>
+                      <p className="text-3xl font-bold text-foreground">98%</p>
                     </div>
                   </div>
                 </motion.div>
@@ -145,7 +143,7 @@ export default function Home() {
                 >
                   <div className="flex items-center gap-2">
                     <Clock className="w-5 h-5" />
-                    <span>دعم ٢٤/٧</span>
+                    <span>دعم 24/7</span>
                   </div>
                 </motion.div>
               </div>
@@ -159,10 +157,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: "+٥٠٠٠", label: "عميل يثق بنا", icon: Users },
-              { value: "٩٨٪", label: "نسبة رضا العملاء", icon: Star },
-              { value: "٢٤/٧", label: "دعم فني متواصل", icon: HeadphonesIcon },
-              { value: "+١٥", label: "سنة من الخبرة", icon: Award },
+              { value: "+5000", label: "عميل يثق بنا", icon: Users },
+              { value: "98%", label: "نسبة رضا العملاء", icon: Star },
+              { value: "24/7", label: "دعم فني متواصل", icon: HeadphonesIcon },
+              { value: "+15", label: "سنة من الخبرة", icon: Award },
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -240,40 +238,23 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {offersLoading ? (
-              Array(2)
-                .fill(0)
-                .map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-72 bg-muted rounded-3xl animate-pulse"
-                  />
-                ))
-            ) : offers?.length ? (
-              offers.map((offer, index) => (
-                <motion.div
-                  key={offer.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <OfferCard
-                    title={offer.title}
-                    description={offer.description}
-                    discount={offer.discount}
-                    validUntil={offer.validUntil?.toString()}
-                    onClick={scrollToQuote}
-                  />
-                </motion.div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-16 bg-muted/50 rounded-3xl">
-                <p className="text-muted-foreground font-arabic text-lg">
-                  لا توجد عروض حالياً، تابعنا قريباً!
-                </p>
-              </div>
-            )}
+            {offers.map((offer, index) => (
+              <motion.div
+                key={offer.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <OfferCard
+                  title={offer.title}
+                  description={offer.description}
+                  discount={offer.discount}
+                  validUntil={offer.validUntil}
+                  onClick={scrollToQuote}
+                />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -300,36 +281,21 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {productsLoading ? (
-              Array(3)
-                .fill(0)
-                .map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-72 bg-card rounded-3xl animate-pulse shadow-sm"
-                  />
-                ))
-            ) : products?.length ? (
-              products.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <ProductCard
-                    name={product.name}
-                    description={product.description}
-                    icon={product.icon}
-                  />
-                </motion.div>
-              ))
-            ) : (
-              <p className="col-span-full text-center text-muted-foreground font-arabic">
-                جاري إضافة الخدمات...
-              </p>
-            )}
+            {products.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <ProductCard
+                  name={product.name}
+                  description={product.description}
+                  icon={product.icon}
+                />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -390,7 +356,7 @@ export default function Home() {
                 {[CheckCircle2, CheckCircle2, CheckCircle2].map((Icon, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground font-arabic">
                     <Icon className="w-5 h-5 text-accent" />
-                    <span>{["سهولة المطالبات", "دعم فني ٢٤/٧", "تغطية شاملة"][i]}</span>
+                    <span>{["سهولة المطالبات", "دعم فني 24/7", "تغطية شاملة"][i]}</span>
                   </div>
                 ))}
               </div>
