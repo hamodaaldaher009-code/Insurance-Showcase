@@ -1,38 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Professional Blue Palette */
-  --primary: 217 91% 60%;
-  --primary-foreground: 0 0% 100%;
+  /* Elegant Warm Neutral Palette - Inspired by premium designs */
+  --primary: 24 9% 20%;
+  --primary-foreground: 40 20% 98%;
   
-  --secondary: 215 28% 17%;
-  --secondary-foreground: 0 0% 100%;
+  --secondary: 40 20% 96%;
+  --secondary-foreground: 24 9% 20%;
 
-  --accent: 43 96% 58%; /* Gold accent for offers */
-  --accent-foreground: 215 28% 17%;
+  --accent: 12 76% 61%;
+  --accent-foreground: 40 20% 98%;
 
-  --background: 210 40% 98%;
-  --foreground: 222 47% 11%;
+  --background: 40 20% 96%;
+  --foreground: 24 9% 15%;
 
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --card-foreground: 24 9% 15%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
+  --popover-foreground: 24 9% 15%;
 
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 40 15% 92%;
+  --muted-foreground: 24 5% 45%;
 
   --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive-foreground: 40 20% 98%;
 
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 53%;
+  --border: 40 10% 88%;
+  --input: 40 10% 88%;
+  --ring: 24 9% 20%;
 
   --radius: 0.75rem;
 
@@ -41,17 +41,23 @@
 }
 
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
+  --background: 24 9% 10%;
+  --foreground: 40 20% 98%;
   
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
+  --primary: 40 20% 96%;
+  --primary-foreground: 24 9% 10%;
 
-  --card: 217 33% 17%;
-  --card-foreground: 210 40% 98%;
+  --secondary: 24 9% 15%;
+  --secondary-foreground: 40 20% 98%;
+
+  --card: 24 9% 12%;
+  --card-foreground: 40 20% 98%;
   
-  --border: 217 33% 20%;
-  --input: 217 33% 20%;
+  --muted: 24 9% 18%;
+  --muted-foreground: 40 10% 60%;
+  
+  --border: 24 9% 20%;
+  --input: 24 9% 20%;
 }
 
 @layer base {
@@ -60,13 +66,11 @@
     font-family: var(--font-sans);
   }
   
-  /* Apply Cairo font to headings for better Arabic typography */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-arabic);
     @apply font-bold tracking-tight;
   }
 
-  /* Specific class for Arabic text blocks */
   .font-arabic {
     font-family: var(--font-arabic);
   }
@@ -79,10 +83,18 @@
   }
   
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply bg-white/90 backdrop-blur-md border border-white/40 shadow-xl;
   }
   
   .text-shadow {
     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
   }
 }

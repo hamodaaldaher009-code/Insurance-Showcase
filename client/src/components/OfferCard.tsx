@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Percent } from "lucide-react";
+import { Clock, Percent, ArrowLeft, Sparkles } from "lucide-react";
 
 interface OfferCardProps {
   title: string;
@@ -12,30 +12,35 @@ interface OfferCardProps {
 
 export function OfferCard({ title, description, discount, validUntil, onClick }: OfferCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-secondary to-slate-900 p-1 text-white shadow-2xl">
-      {/* Decorative background elements */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl"></div>
+    <div className="group relative overflow-hidden rounded-3xl bg-primary p-1">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary-foreground/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
 
-      <div className="relative h-full bg-slate-900/40 backdrop-blur-sm rounded-xl p-6 md:p-8 flex flex-col items-start gap-6">
-        {discount && (
-          <Badge className="bg-accent text-accent-foreground hover:bg-accent/90 px-4 py-1.5 text-base font-bold font-arabic shadow-lg shadow-accent/20 animate-pulse">
-            <Percent className="w-4 h-4 mr-1 ml-1" />
-            {discount}
-          </Badge>
-        )}
+      <div className="relative h-full bg-primary rounded-[1.25rem] p-8 flex flex-col items-start gap-6">
+        <div className="flex items-center gap-3">
+          {discount && (
+            <Badge className="bg-accent text-accent-foreground hover:bg-accent/90 px-4 py-2 text-base font-bold font-arabic shadow-lg">
+              <Percent className="w-4 h-4 ml-1" />
+              {discount}
+            </Badge>
+          )}
+          <div className="bg-primary-foreground/10 p-2 rounded-full">
+            <Sparkles className="w-5 h-5 text-accent" />
+          </div>
+        </div>
 
-        <div className="space-y-2">
-          <h3 className="text-2xl md:text-3xl font-bold font-arabic leading-tight">
+        <div className="space-y-3">
+          <h3 className="text-2xl md:text-3xl font-bold font-arabic leading-tight text-primary-foreground">
             {title}
           </h3>
-          <p className="text-slate-300 font-arabic text-lg leading-relaxed max-w-md">
+          <p className="text-primary-foreground/70 font-arabic text-lg leading-relaxed max-w-md">
             {description}
           </p>
         </div>
 
         {validUntil && (
-          <div className="flex items-center gap-2 text-sm text-slate-400 font-arabic bg-white/5 px-3 py-1 rounded-full">
+          <div className="flex items-center gap-2 text-sm text-primary-foreground/60 font-arabic bg-primary-foreground/5 px-4 py-2 rounded-full">
             <Clock className="w-4 h-4" />
             <span>ينتهي في: {new Date(validUntil).toLocaleDateString('ar-SA')}</span>
           </div>
@@ -45,9 +50,10 @@ export function OfferCard({ title, description, discount, validUntil, onClick }:
           <Button 
             onClick={onClick}
             size="lg" 
-            className="w-full md:w-auto bg-white text-slate-900 hover:bg-slate-100 font-bold font-arabic shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all"
+            className="w-full md:w-auto bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-bold font-arabic rounded-full h-14 px-8 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all gap-2"
           >
             احصل على العرض الآن
+            <ArrowLeft className="w-5 h-5" />
           </Button>
         </div>
       </div>
